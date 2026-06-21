@@ -1,14 +1,12 @@
 import app from "./app";
-import dotenv from "dotenv"
-import prisma from "./lib/prisma";
+import { prisma } from "./lib/prisma";
 import config from "./config";
-dotenv.config();
 
 const port = config.port;
 
 async function main() {
     try {
-        // await prisma.$connect();
+        await prisma.$connect();
         console.log("Database connected successfully");
 
 
@@ -16,7 +14,7 @@ async function main() {
 
     } catch (error) {
         console.log("Server can't start: ", error);
-        // await prisma.$disconnect();
+        await prisma.$disconnect();
         process.exit(1);
     }
 }
