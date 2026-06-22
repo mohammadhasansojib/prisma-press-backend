@@ -3,6 +3,7 @@ import cors from "cors"
 import express from "express"
 import type { Request, Response } from "express";
 import config from "./config";
+import userRouter from "./module/user/user.route"
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+
+// api routes
+app.use("/api/users", userRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.json({
