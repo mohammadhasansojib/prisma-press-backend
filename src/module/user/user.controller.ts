@@ -7,13 +7,14 @@ import { sendResponse } from "../../utils/sendResponse";
 
 
 const register = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const {name, email, password, profilePhoto} = req.body;
+    const {name, email, password, profilePhoto, role} = req.body;
 
     const user = await userService.createUserIntoDB({
         name,
         email,
         password,
         profilePhoto,
+        role,
     });
 
     sendResponse(res, {

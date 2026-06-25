@@ -2,17 +2,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import config from "../../config";
 import httpStatus from "http-status";
-
-class AppError extends Error {
-  statusCode: number;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-
-    this.name = "AppError";
-    this.statusCode = statusCode;
-  }
-}
+import { AppError } from "../../utils/error";
+import { Role } from "../../../generated/prisma/enums";
 
 
 const createUserIntoDB = async (payload: {
@@ -20,8 +11,9 @@ const createUserIntoDB = async (payload: {
     email: string,
     password: string,
     profilePhoto: string,
+    role?: Role
 }) => {
-    const {name, email, password, profilePhoto} = payload;
+    const {name, email, password, profilePhoto, role} = payload;
 
     const isUserExist = await prisma.user.findUnique({
         where: {
@@ -42,6 +34,7 @@ const createUserIntoDB = async (payload: {
             name,
             email,
             password: hashPassword,
+            role,
             profile: {
                 create: {
                     profilePhoto,
