@@ -52,9 +52,29 @@ const createUserIntoDB = async (payload: {
     return createdUser;
 }
 
+const getMeFromDB = async (id: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            profile: true,
+        },
+        omit: {
+            password: true,
+        }
+    });
+    if (!user) {
+        throw new AppError("user not found", httpStatus.NOT_FOUND);
+    }
+
+    return user;
+}
+
 
 const userService = {
     createUserIntoDB,
+    getMeFromDB,
 }
 
 export default userService;
