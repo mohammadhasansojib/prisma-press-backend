@@ -71,10 +71,58 @@ const getMeFromDB = async (id: string) => {
     return user;
 }
 
+const updateMyProfileIntoDB = async (id: string , payload: {
+    name: string,
+    email: string,
+    bio: string,
+    profilePhoto: string,
+}) => {
+    const {name, email, bio, profilePhoto} = payload;
+
+    if (email) {
+        const isEmailExists = await prisma.user.findUnique({
+            where: {
+                email,
+            },
+            omit: {
+                password: true,
+            }
+        });
+        if (isEmailExists) {
+            throw new AppError("given email already exists", httpStatus.BAD_REQUEST);
+        }
+    }
+
+    const updatedUser = await prisma.user.update({
+        where: {
+            id,
+        },
+        data: {
+            name,
+            email,
+            profile: {
+                update: {
+                    bio,
+                    profilePhoto,
+                }
+            }
+        },
+        omit: {
+            password: true,
+        },
+        include: {
+            profile: true,
+        }
+    });
+
+    return updatedUser;
+}
+
 
 const userService = {
     createUserIntoDB,
     getMeFromDB,
+    updateMyProfileIntoDB,
 }
 
 export default userService;
