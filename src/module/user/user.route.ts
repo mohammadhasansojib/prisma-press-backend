@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post('/register', userController.register);
 router.get('/me', auth(Role.ADMIN, Role.AUTHOR, Role.USER), userController.getMyProfile);
+router.put("/my-profile", auth(Role.ADMIN, Role.USER), userController.updateMyProfile);
 
 
 export default router;
