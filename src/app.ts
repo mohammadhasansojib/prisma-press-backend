@@ -4,6 +4,7 @@ import express from "express"
 import type { Request, Response } from "express";
 import config from "./config";
 import userRouter from "./module/user/user.route"
+import authRouter from "./module/auth/auth.route";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 // api routes
 app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.json({
