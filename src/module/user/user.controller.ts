@@ -27,8 +27,21 @@ const register = catchAsync(async (req: Request, res: Response, next: NextFuncti
     });
 })
 
+const getMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.user?.userId;
+    const user = await userService.getMeFromDB(id);
+
+    sendResponse(res, {
+        success: true,
+        message: "get profile successfully",
+        statusCode: httpStatus.OK,
+        data: {user},
+    })
+})
+
 
 
 export default {
     register,
+    getMyProfile,
 }
