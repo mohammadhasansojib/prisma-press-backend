@@ -24,8 +24,22 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getAllPosts = catchAsync(async (req: Request, res: Response) => {
+    const posts = await postService.getAllPostsFromDB();
+
+    sendResponse(res, {
+        success: true,
+        message: "get all posts successfully",
+        statusCode: httpStatus.OK,
+        data: {
+            posts,
+        }
+    })
+})
+
 
 const postController = {
     createPost,
+    getAllPosts,
 }
 export default postController;

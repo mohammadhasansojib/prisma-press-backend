@@ -5,7 +5,10 @@ import postController from "./post.controller";
 
 const router = express.Router();
 
+router.get('/', postController.getAllPosts)
+
 router.post('/', auth(Role.ADMIN, Role.USER), postController.createPost)
+
 
 const postRouter = router;
 export default postRouter;
