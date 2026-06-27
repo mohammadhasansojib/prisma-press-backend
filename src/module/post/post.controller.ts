@@ -3,6 +3,8 @@ import { catchAsync } from "../../utils/catchAsync";
 import postService from "./post.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status"
+import { AppError } from "../../utils/error";
+import { Role } from "../../../generated/prisma/enums";
 
 
 const createPost = catchAsync(async (req: Request, res: Response) => {
@@ -37,9 +39,27 @@ const getAllPosts = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getSinglePostById = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.postId;
+    if (typeof id !== "string" || id.trim() === "") {
+        throw new AppError("invalid post id", httpStatus.BAD_REQUEST);
+    }
+
+    const post = await postService.getPostByIdFromDB(id);
+
+    sendResponse(res, {
+        success: true,
+        message: "post retrived successfully",
+        statusCode: httpStatus.OK,
+        data: {
+            post,
+        }
+    })
+})
 
 const postController = {
     createPost,
     getAllPosts,
+    getSinglePostById,
 }
 export default postController;

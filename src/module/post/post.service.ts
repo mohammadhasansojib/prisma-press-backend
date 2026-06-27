@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayload } from "./post.interface";
+import { AppError } from "../../utils/error";
 
 
 
@@ -23,9 +23,23 @@ const getAllPostsFromDB = async () => {
     return posts;
 }
 
+const getPostByIdFromDB = async (id: string) => {
+    const post = await prisma.post.findUnique({
+        where: {
+            id,
+        }
+    });
+    if (!post) {
+        throw new AppError("no post found", httpStatus.NOT_FOUND);
+    }
+
+    return post;
+}
+
 
 const postService = {
     createPostIntoDB,
     getAllPostsFromDB,
+    getPostByIdFromDB,
 }
 export default postService;

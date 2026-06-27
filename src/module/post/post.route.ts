@@ -6,6 +6,7 @@ import postController from "./post.controller";
 const router = express.Router();
 
 router.get('/', postController.getAllPosts)
+router.get('/:postId', postController.getSinglePostById)
 
 router.post('/', auth(Role.ADMIN, Role.USER), postController.createPost)
 
