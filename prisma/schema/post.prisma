@@ -1,15 +1,21 @@
+model Post {
+  id         String     @id @default(uuid())
+  title      String     @db.VarChar(255)
+  content    String     @db.Text
+  thumbnail  String?
+  isFeatured Boolean    @default(false)
+  status     PostStatus @default(PUBLISHED)
 
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-model Profile {
-    id String @id @default(uuid())
-    profilePhoto String?
-    bio String?
+  tags      String[]
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    userId String @unique
-    user User @relation(fields: [userId], references: [id])
+  comments Comment[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@map("profiles")
+  @@index([authorId])
+  @@map("posts")
 }
