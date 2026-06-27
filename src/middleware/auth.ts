@@ -7,7 +7,7 @@ import httpStatus from "http-status"
 import { prisma } from "../lib/prisma";
 import { catchAsync } from "../utils/catchAsync";
 import { sendResponse } from "../utils/sendResponse";
-import { verifyToken } from "../utils/verifyToken";
+import { jwtUtils } from "../utils/jwt";
 
 declare global {
     namespace Express {
@@ -29,7 +29,7 @@ const auth = (...roles: Role[]) => {
             throw new AppError("token not found", httpStatus.UNAUTHORIZED);
         }
 
-        const decoded = verifyToken(
+        const decoded = jwtUtils.verifyToken(
             token,
             config.jwt_access_secret,
         ) as JwtPayload;

@@ -24,9 +24,18 @@ const createToken = (
     return token;
 }
 
+export const verifyToken = (token: string, secret: string) => {
+    const decoded = jwt.verify(
+        token,
+        secret,
+    );
+
+    return decoded;
+}
 
 
 
 export const jwtUtils = {
     createToken,
+    verifyToken,
 }
