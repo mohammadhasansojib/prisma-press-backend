@@ -57,6 +57,24 @@ const getSinglePostById = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getMyPosts = catchAsync(async (req: Request, res: Response) => {
+    const authorId = req.user?.userId;
+    if (typeof authorId !== "string" || authorId.trim() === "") {
+        throw new AppError("invalid author id", httpStatus.BAD_REQUEST);
+    }
+
+    const posts = await postService.getMyPostsFromDB(authorId);
+
+    sendResponse(res, {
+        success: true,
+        message: "posts retrived successfully",
+        statusCode: httpStatus.OK,
+        data: {
+            posts,
+        }
+    })
+})
+
 const postController = {
     createPost,
     getAllPosts,

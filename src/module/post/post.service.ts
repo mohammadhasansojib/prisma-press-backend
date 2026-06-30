@@ -57,6 +57,19 @@ const getPostByIdFromDB = async (id: string) => {
     return transactionPost;
 }
 
+
+
+const getMyPostsFromDB = async (authorId: string,) => {
+    const posts = await prisma.post.findMany({
+        where: {
+            authorId,
+        }
+    });
+    
+    return posts;
+}
+
+
     const post = await prisma.post.findUnique({
         where: {
             id,
