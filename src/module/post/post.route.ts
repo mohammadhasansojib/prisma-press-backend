@@ -11,6 +11,8 @@ router.get('/:postId', postController.getSinglePostById)
 
 router.post('/', auth(Role.ADMIN, Role.USER), postController.createPost)
 
+router.patch('/:postId', auth(Role.ADMIN, Role.USER), postController.updatePost)
+
 
 const postRouter = router;
 export default postRouter;

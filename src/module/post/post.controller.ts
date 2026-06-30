@@ -75,6 +75,34 @@ const getMyPosts = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const updatePost = catchAsync(async (req: Request, res: Response) => {
+    const authorId = req.user?.userId;
+    const postId = req.params.postId;
+    const payload = req.body;
+
+    if (typeof postId !== "string" || postId.trim() === "") {
+        throw new AppError("invalid post id", httpStatus.BAD_REQUEST);
+    }
+    if (typeof authorId !== "string" || authorId.trim() === "") {
+        throw new AppError("invalid author id", httpStatus.BAD_REQUEST);
+    }
+
+    const updatedPost = await postService.updatePostIntoDB(
+        authorId,
+        postId,
+        payload,
+    );
+
+    sendResponse(res, {
+        success: true,
+        message: "post updated successfully",
+        statusCode: httpStatus.OK,
+        data: {
+            updatedPost,
+        }
+    })
+})
+
 const postController = {
     createPost,
     getAllPosts,

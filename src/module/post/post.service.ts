@@ -70,6 +70,36 @@ const getMyPostsFromDB = async (authorId: string,) => {
 }
 
 
+
+const updatePostIntoDB = async (
+    authorId: string,
+    postId: string,
+    payload: IUpdatePostPayload,
+) => {
+    const post = await prisma.post.findUnique({
+        where: {
+            id: postId,
+        }
+    });
+    if (!post) {
+        throw new AppError("no post found with this post id", httpStatus.BAD_REQUEST);
+    }
+    if (post.authorId !== authorId) {
+        throw new AppError("you are not permitted to update this resource", httpStatus.FORBIDDEN);
+    }
+
+    const updatedPost = await prisma.post.update({
+        where: {
+            id: postId,
+        },
+        data: {
+            ...payload,
+        },
+    });
+
+    return updatedPost;
+}
+
     const post = await prisma.post.findUnique({
         where: {
             id,
