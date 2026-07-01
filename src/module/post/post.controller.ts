@@ -103,11 +103,41 @@ const updatePost = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const deletePost = catchAsync(async (req: Request, res: Response) => {
+    const authorId = req.user?.userId;
+    const role = req.user?.role;
+    const postId = req.params.postId;
+
+    if (typeof authorId !== "string" || authorId.trim() === "") {
+        throw new AppError("invalid author id", httpStatus.BAD_REQUEST);
+    }
+    if (typeof postId !== "string" || postId.trim() === "") {
+        throw new AppError("invalid post id", httpStatus.BAD_REQUEST);
+    }
+    if (![Role.ADMIN, Role.AUTHOR, Role.USER].includes(role)) {
+        throw new AppError("invalid user role", httpStatus.BAD_REQUEST);
+    }
+
+    await postService.deletePostFromDB(
+        postId,
+        authorId,
+        role,
+    );
+
+    sendResponse(res, {
+        success: true,
+        message: "post deleted successfully",
+        statusCode: httpStatus.OK,
+        data: {},
+    })
+})
+
 const postController = {
     createPost,
     getAllPosts,
     getSinglePostById,
     getMyPosts,
     updatePost,
+    deletePost,
 }
 export default postController;

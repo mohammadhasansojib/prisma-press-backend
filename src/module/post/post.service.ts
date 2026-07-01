@@ -2,6 +2,7 @@ import { prisma } from "../../lib/prisma";
 import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface";
 import { AppError } from "../../utils/error";
 import httpStatus from "http-status"
+import { CommentStatus, PostStatus, Role } from "../../../generated/prisma/enums";
 
 
 
@@ -101,16 +102,30 @@ const updatePostIntoDB = async (
     return updatedPost;
 }
 
+
+
+const deletePostFromDB = async (postId: string, authorId: string, role: Role) => {
     const post = await prisma.post.findUnique({
         where: {
-            id,
+            id: postId,
         }
     });
     if (!post) {
-        throw new AppError("no post found", httpStatus.NOT_FOUND);
+        throw new AppError("no post found to delete", httpStatus.BAD_REQUEST);
+    }
+    if (post.authorId !== authorId && role !== Role.ADMIN) {
+        throw new AppError("you are not permitted to delete this resource", httpStatus.FORBIDDEN);
     }
 
-    return post;
+    await prisma.post.delete({
+        where: {
+            id: postId,
+        }
+    });
+
+    return null;
+}
+
 }
 
 
@@ -120,5 +135,6 @@ const postService = {
     getPostByIdFromDB,
     getMyPostsFromDB,
     updatePostIntoDB,
+    deletePostFromDB,
 }
 export default postService;

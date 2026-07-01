@@ -13,6 +13,8 @@ router.post('/', auth(Role.ADMIN, Role.USER), postController.createPost)
 
 router.patch('/:postId', auth(Role.ADMIN, Role.USER), postController.updatePost)
 
+router.delete('/:postId', auth(Role.ADMIN, Role.USER), postController.deletePost)
+
 
 const postRouter = router;
 export default postRouter;
