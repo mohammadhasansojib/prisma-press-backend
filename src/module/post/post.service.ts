@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface";
 import { AppError } from "../../utils/error";
 import httpStatus from "http-status"
 
