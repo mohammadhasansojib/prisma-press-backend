@@ -107,5 +107,7 @@ const postController = {
     createPost,
     getAllPosts,
     getSinglePostById,
+    getMyPosts,
+    updatePost,
 }
 export default postController;

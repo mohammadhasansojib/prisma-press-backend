@@ -117,5 +117,7 @@ const postService = {
     createPostIntoDB,
     getAllPostsFromDB,
     getPostByIdFromDB,
+    getMyPostsFromDB,
+    updatePostIntoDB,
 }
 export default postService;
