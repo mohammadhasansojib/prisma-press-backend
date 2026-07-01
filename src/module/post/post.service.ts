@@ -126,6 +126,69 @@ const deletePostFromDB = async (postId: string, authorId: string, role: Role) =>
     return null;
 }
 
+
+
+const getPostStatsFromDB = async () => {
+    const transactionResult = await prisma.$transaction(async (tx) => {
+        const [
+            totalPosts,
+            totalPublishedPosts,
+            totalDraftPosts,
+            totalArchivedPosts,
+            totalComments,
+            totalApprovedComments,
+            totalRejectedComments,
+            totalPostViewsAggregate,
+        ] = await Promise.all([
+            tx.post.count(),
+            tx.post.count({
+                where: {
+                    status: PostStatus.PUBLISHED,
+                }
+            }),
+            tx.post.count({
+                where: {
+                    status: PostStatus.DRAFT,
+                }
+            }),
+            tx.post.count({
+                where: {
+                    status: PostStatus.ARCHIVED,
+                }
+            }),
+            tx.comment.count(),
+            tx.comment.count({
+                where: {
+                    status: CommentStatus.APPROVED,
+                }
+            }),
+            tx.comment.count({
+                where: {
+                    status: CommentStatus.REJECTED,
+                }
+            }),
+
+            tx.post.aggregate({
+                _sum: {
+                    views: true,
+                }
+            }),
+        ]);
+
+        return {
+            totalPosts,
+            totalPublishedPosts,
+            totalDraftPosts,
+            totalArchivedPosts,
+            totalComments,
+            totalApprovedComments,
+            totalRejectedComments,
+            totalPostViews: totalPostViewsAggregate._sum.views,
+        }
+        
+    });
+
+    return transactionResult;
 }
 
 
@@ -136,5 +199,6 @@ const postService = {
     getMyPostsFromDB,
     updatePostIntoDB,
     deletePostFromDB,
+    getPostStatsFromDB,
 }
 export default postService;
